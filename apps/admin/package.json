@@ -18,7 +18,7 @@
     "@carnival/templates": "workspace:*",
     "@fastify/cookie": "^11.0.2",
     "@fastify/formbody": "^9.0.0",
-    "@fastify/multipart": "^9.0.3",
+    "@fastify/multipart": "^10.1.1",
     "@fastify/rate-limit": "^11.2.0",
     "dotenv": "^17.4.2",
     "eta": "^3.5.0",
