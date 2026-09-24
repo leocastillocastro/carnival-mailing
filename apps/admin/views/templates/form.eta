@@ -1,0 +1,40 @@
+<h1><%= it.title %></h1>
+<p>Variables disponibles: <code>{{contact.firstName}}</code>, <code>{{contact.lastName}}</code>, <code>{{contact.email}}</code>, <code>{{contact.attributes.*}}</code>, <code>{{unsubscribeUrl}}</code> — se insertan solas con los bloques de la categoría "Variables", no hace falta escribirlas a mano. También podés usar <code>{{campaign.loQueQuieras}}</code> (cualquier nombre) para cualquier dato que cambie en cada envío — título, precio, texto de la promo — y esa campaña va a mostrar automáticamente una casilla para completarlo al armar la campaña.</p>
+<!-- Subresource Integrity pinned to these exact published versions — if the
+     CDN or the npm package itself were ever compromised, the browser refuses
+     to run a script/stylesheet that doesn't match this hash, instead of
+     silently executing whatever it was swapped for with full access to the
+     one admin session that controls every contact and can trigger real
+     sends. Re-generate both the version pin and the hash together if this
+     ever gets upgraded — see git history for the sha384sum command used. -->
+<link rel="stylesheet" href="https://unpkg.com/grapesjs@0.23.6/dist/css/grapes.min.css" integrity="sha384-ipHR7uZK8wuUZWD8zZ09XYemZDqShtJpYjZibAX8L1f5rAUb4W78/j43sKG32Ip4" crossorigin="anonymous">
+<script src="https://unpkg.com/grapesjs@0.23.6/dist/grapes.min.js" integrity="sha384-G8xsNrgjo5FhH6KRYfNNqPQJIX+CqzulP/0k3U+DAYwXrjv4nQt9EdKRLLq/gqRd" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/grapesjs-preset-newsletter@1.0.2/dist/index.js" integrity="sha384-g6PRPz/Tx4TepexHMqRJ2fmXdDh3pdPgAjQOUwYZh7R1eAxdY2yG2XKwRykvQZB7" crossorigin="anonymous"></script>
+<style>
+  /* GrapesJS's own default block-manager panel is only ~136px wide, which
+     ellipsis-clips even its own built-in labels ("1/2 Secti…") — badly enough
+     to make our custom merge-tag blocks ("Saludo con nombre", "Dudas:
+     WhatsApp") unreadable, since picking the right one by name is the whole
+     point of that category. Widen the panel instead of shortening the labels. */
+  .gjs-pn-views-container, .gjs-blocks-c { width: 220px; }
+</style>
+<form method="post" action="<%= it.template && it.template.id ? "/templates/" + it.template.id : "/templates" %>" id="template-form">
+  <label><span>Nombre</span><input type="text" name="name" required value="<%= it.template ? it.template.name || "" : "" %>"></label>
+  <label><span>Diseño del correo</span></label>
+  <div id="template-editor-root"></div>
+  <label class="html-fallback"><span>Contenido HTML</span><textarea name="htmlContent" required><%= it.template ? it.template.htmlContent || "" : "" %></textarea></label>
+  <div class="actions">
+    <button class="primary" type="submit">Guardar</button>
+    <a href="/templates"><button type="button" class="secondary">Cancelar</button></a>
+    <% if (it.template && it.template.id) { %>
+      <a href="/templates/<%= it.template.id %>/preview" target="_blank" rel="noopener"><button type="button" class="secondary">Vista previa ↗</button></a>
+    <% } %>
+  </div>
+</form>
+<script type="module" src="/template-editor.js"></script>
+<% if (it.template && it.template.id) { %>
+  <p style="color:#57534e; font-size:0.9rem;">La vista previa muestra lo último <strong>guardado</strong> — guardá los cambios antes de abrirla.</p>
+  <form method="post" action="/templates/<%= it.template.id %>/delete" onsubmit="return confirm('¿Borrar el template «' + <%= JSON.stringify(it.template.name || "") %> + '»?')">
+    <button type="submit" class="danger">Borrar</button>
+  </form>
+<% } %>

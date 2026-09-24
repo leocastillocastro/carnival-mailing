@@ -1,0 +1,32 @@
+<div class="toolbar">
+  <h1>Contactos de "<%= it.segment.name %>"</h1>
+  <a href="/segments/<%= it.segment.id %>/edit"><button type="button" class="secondary">Volver</button></a>
+</div>
+<% if (it.contacts.length === 0) { %>
+  <div class="empty-state">
+    <p>Todavía no hay contactos que cumplan las reglas de este segmento.</p>
+  </div>
+<% } else { %>
+<table>
+  <thead><tr><th>Email</th><th>Nombre</th><th>Estado</th></tr></thead>
+  <tbody>
+  <% it.contacts.forEach(function(contact) { %>
+    <tr>
+      <td><%= contact.email %></td>
+      <td><%= [contact.firstName, contact.lastName].filter(Boolean).join(" ") || "—" %></td>
+      <td><span class="status-pill" data-status="<%= contact.status %>"><%= it.contactStatusLabel(contact.status) %></span></td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+<div class="pagination">
+  <span><%= it.total %> contacto<%= it.total === 1 ? "" : "s" %> en total</span>
+  <span>
+    <% if (it.page > 1) { %><a href="/segments/<%= it.segment.id %>/contacts?page=<%= it.page - 1 %>">&larr; Anterior</a><% } %>
+    <% if (it.page * it.pageSize < it.total) { %>
+      <% if (it.page > 1) { %> · <% } %>
+      <a href="/segments/<%= it.segment.id %>/contacts?page=<%= it.page + 1 %>">Siguiente &rarr;</a>
+    <% } %>
+  </span>
+</div>
+<% } %>

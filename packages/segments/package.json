@@ -1,0 +1,23 @@
+{
+  "name": "@carnival/segments",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@carnival/db": "workspace:*",
+    "drizzle-orm": "^0.45.2",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.0",
+    "dotenv": "^17.4.2",
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.11"
+  }
+}

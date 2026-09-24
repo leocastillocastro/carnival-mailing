@@ -1,0 +1,17 @@
+<h1><%= it.title %></h1>
+<form method="post" action="<%= it.list && it.list.id ? "/lists/" + it.list.id : "/lists" %>">
+  <label><span>Nombre</span><input type="text" name="name" required value="<%= it.list ? it.list.name || "" : "" %>"></label>
+  <label><span>Descripción</span><input type="text" name="description" value="<%= it.list ? it.list.description || "" : "" %>"></label>
+  <div class="actions">
+    <button class="primary" type="submit">Guardar</button>
+    <a href="/lists"><button type="button" class="secondary">Cancelar</button></a>
+  </div>
+</form>
+<% if (it.list && it.list.id) { %>
+  <div class="actions">
+    <a href="/lists/<%= it.list.id %>/contacts"><button type="button" class="secondary">Ver contactos</button></a>
+    <form method="post" action="/lists/<%= it.list.id %>/delete" onsubmit="return confirm('¿Borrar la lista «' + <%= JSON.stringify(it.list.name || "") %> + '»?')">
+      <button type="submit" class="danger">Borrar</button>
+    </form>
+  </div>
+<% } %>

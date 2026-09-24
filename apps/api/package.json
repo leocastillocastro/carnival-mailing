@@ -1,0 +1,33 @@
+{
+  "name": "@carnival/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "backfill": "tsx scripts/backfill.ts",
+    "sendCampaign": "tsx scripts/sendCampaign.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@carnival/campaigns": "workspace:*",
+    "@carnival/db": "workspace:*",
+    "@carnival/mailer": "workspace:*",
+    "@carnival/queue": "workspace:*",
+    "@carnival/segments": "workspace:*",
+    "@carnival/woocommerce": "workspace:*",
+    "@fastify/rate-limit": "^11.2.0",
+    "dotenv": "^17.4.2",
+    "fastify": "^5.2.0",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.0",
+    "tsx": "^4.23.13",
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.11"
+  }
+}

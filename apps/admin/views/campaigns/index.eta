@@ -1,0 +1,28 @@
+<div class="toolbar">
+  <h1>Campañas</h1>
+  <a href="/campaigns/new"><button class="primary">Nueva campaña</button></a>
+</div>
+<% if (it.campaigns.length === 0) { %>
+  <div class="empty-state">
+    <p>Todavía no hay campañas.</p>
+    <p>Una campaña manda un <a href="/templates">template</a> a una <a href="/lists">lista</a> o <a href="/segments">segmento</a> — creá esos primero si todavía no tenés.</p>
+  </div>
+<% } else { %>
+<table>
+  <thead><tr><th>Nombre</th><th>Destinatarios</th><th>Estado</th><th>Enviada</th><th></th></tr></thead>
+  <tbody>
+  <% it.campaigns.forEach(function(c) { %>
+    <tr>
+      <td><%= c.name %></td>
+      <td><%= c.listName ? "Lista: " + c.listName : (c.segmentName ? "Segmento: " + c.segmentName : "—") %></td>
+      <td><span class="status-pill" data-status="<%= c.status %>"><%= it.campaignStatusLabel(c.status) %></span></td>
+      <td><%= c.sentAt ? new Date(c.sentAt).toLocaleString("es-ES") : "—" %></td>
+      <td class="row-actions">
+        <a href="/campaigns/<%= c.id %>/edit">Editar</a>
+        <form method="post" action="/campaigns/<%= c.id %>/duplicate"><button type="submit" class="link-button">Duplicar</button></form>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+<% } %>

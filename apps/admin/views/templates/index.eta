@@ -1,0 +1,19 @@
+<div class="toolbar">
+  <h1>Templates</h1>
+  <a href="/templates/new"><button class="primary">Nuevo template</button></a>
+</div>
+<table>
+  <thead><tr><th>Nombre</th><th>Actualizado</th><th></th></tr></thead>
+  <tbody>
+  <% it.templates.forEach(function(tpl) { %>
+    <tr>
+      <td><%= tpl.name %></td>
+      <td><%= new Date(tpl.updatedAt).toLocaleString("es-ES") %></td>
+      <td><a href="/templates/<%= tpl.id %>/edit">Editar</a> · <a href="/templates/<%= tpl.id %>/preview" target="_blank" rel="noopener">Vista previa ↗</a></td>
+    </tr>
+  <% }) %>
+  <% if (it.templates.length === 0) { %>
+    <tr><td colspan="3">Todavía no hay templates.</td></tr>
+  <% } %>
+  </tbody>
+</table>

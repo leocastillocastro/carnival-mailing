@@ -1,0 +1,13 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+allowBuilds:
+  esbuild: true
+  msgpackr-extract: true
+# Forces the whole tree onto patched versions of vite/esbuild, both only ever
+# pulled in transitively (by vitest and drizzle-kit) — neither runs as a
+# network-facing dev server in this project, but no reason to leave the
+# lockfile pointing at flagged versions when a same-major bump is available.
+overrides:
+  vite: ^6.4.3
+  esbuild: ">=0.25.0"

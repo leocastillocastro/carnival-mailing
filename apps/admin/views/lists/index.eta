@@ -1,0 +1,23 @@
+<div class="toolbar">
+  <h1>Listas</h1>
+  <a href="/lists/new"><button class="primary">Nueva lista</button></a>
+</div>
+<% if (it.lists.length === 0) { %>
+  <div class="empty-state">
+    <p>Todavía no hay listas.</p>
+    <p>Una lista agrupa contactos elegidos a mano — a diferencia de un <a href="/segments">segmento</a>, que se arma solo según reglas (por ejemplo, "compró en los últimos 30 días").</p>
+  </div>
+<% } else { %>
+<table>
+  <thead><tr><th>Nombre</th><th>Suscriptores</th><th></th></tr></thead>
+  <tbody>
+  <% it.lists.forEach(function(list) { %>
+    <tr>
+      <td><%= list.name %></td>
+      <td><%= list.subscriberCount %></td>
+      <td><a href="/lists/<%= list.id %>/edit">Editar</a></td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+<% } %>

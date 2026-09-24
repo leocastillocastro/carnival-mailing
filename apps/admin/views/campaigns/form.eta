@@ -1,0 +1,206 @@
+<h1><%= it.title %></h1>
+<script type="application/json" id="campaign-content-fields-data"><%~ it.contentFieldsJson %></script>
+<% var listTarget = it.campaign && it.campaign.listId; %>
+<% var segmentTarget = it.campaign && it.campaign.segmentId; %>
+<% var readOnly = !!(it.campaign && it.campaign.status && it.campaign.status !== "draft"); %>
+<% if (readOnly) { %>
+  <p class="field-hint">Esta campaña ya se envió (o se está enviando) — el contenido queda fijo y no se puede editar.</p>
+<% } %>
+<div class="wizard-tabs">
+  <button type="button" class="wizard-tab" data-step-link="1">1. Campaña</button>
+  <button type="button" class="wizard-tab" data-step-link="2">2. Contenido</button>
+</div>
+<form method="post" action="<%= it.campaign && it.campaign.id ? "/campaigns/" + it.campaign.id : "/campaigns" %>" data-wizard data-initial-step="<%= it.errorStep || 1 %>">
+  <fieldset class="wizard-fieldset" <%= readOnly ? "disabled" : "" %>>
+    <section class="wizard-step" data-step="1">
+      <label><span>Nombre interno</span><input type="text" name="name" required value="<%= it.campaign ? it.campaign.name || "" : "" %>"></label>
+      <label>
+        <span>Template</span>
+        <select name="templateId" id="templateId" required>
+          <option value="" disabled <%= it.campaign && it.campaign.templateId ? "" : "selected" %>>— elegí un template —</option>
+          <% it.templates.forEach(function(tpl) { %>
+            <option value="<%= tpl.id %>" <%= it.campaign && it.campaign.templateId === tpl.id ? "selected" : "" %>><%= tpl.name %></option>
+          <% }) %>
+        </select>
+      </label>
+      <p id="templatePreviewLink" class="field-hint" hidden>
+        <a href="#" target="_blank" rel="noopener">Vista previa del template elegido ↗</a>
+      </p>
+      <script>
+        (function () {
+          var templateSelect = document.getElementById("templateId");
+          var previewP = document.getElementById("templatePreviewLink");
+          var previewLink = previewP.querySelector("a");
+          function syncPreviewLink() {
+            if (templateSelect.value) {
+              previewLink.href = "/templates/" + templateSelect.value + "/preview";
+              previewP.hidden = false;
+            } else {
+              previewP.hidden = true;
+            }
+          }
+          templateSelect.addEventListener("change", syncPreviewLink);
+          syncPreviewLink();
+        })();
+      </script>
+      <label><span>Asunto</span><input type="text" name="subject" required value="<%= it.campaign ? it.campaign.subject || "" : "" %>"></label>
+      <label><span>Remitente (nombre)</span><input type="text" name="fromName" required value="<%= it.campaign ? it.campaign.fromName || "" : "Carnival" %>"></label>
+      <label>
+        <span>Remitente (email)</span>
+        <input type="email" name="fromEmail" required placeholder="no-reply@example.com" value="<%= it.campaign ? it.campaign.fromEmail || "" : "" %>">
+      </label>
+      <p class="field-hint">Tiene que ser una dirección (o el dominio completo) ya verificado en Amazon SES — si no, el envío va a fallar.</p>
+      <label>
+        <span>Destinatarios</span>
+        <select name="targetType" id="targetType">
+          <option value="list" <%= !segmentTarget ? "selected" : "" %>>Lista</option>
+          <option value="segment" <%= segmentTarget ? "selected" : "" %>>Segmento</option>
+        </select>
+      </label>
+      <label id="listField">
+        <span>Lista</span>
+        <select name="listId" required>
+          <option value="" disabled <%= listTarget ? "" : "selected" %>>— elegí una lista —</option>
+          <% it.lists.forEach(function(list) { %>
+            <option value="<%= list.id %>" <%= listTarget === list.id ? "selected" : "" %>><%= list.name %></option>
+          <% }) %>
+        </select>
+      </label>
+      <label id="segmentField">
+        <span>Segmento</span>
+        <select name="segmentId" required>
+          <option value="" disabled <%= segmentTarget ? "" : "selected" %>>— elegí un segmento —</option>
+          <% it.segmentGroups.forEach(function(group) { %>
+            <optgroup label="<%= group.category %>">
+              <% group.segments.forEach(function(segment) { %>
+                <option value="<%= segment.id %>" <%= segmentTarget === segment.id ? "selected" : "" %>><%= segment.name %></option>
+              <% }) %>
+            </optgroup>
+          <% }) %>
+        </select>
+      </label>
+      <p id="audienceCount" class="audience-count" aria-live="polite"></p>
+      <script>
+        (function () {
+          var select = document.getElementById("targetType");
+          var listField = document.getElementById("listField");
+          var segmentField = document.getElementById("segmentField");
+          var listSelect = listField.querySelector("select");
+          var segmentSelect = segmentField.querySelector("select");
+          var audienceCount = document.getElementById("audienceCount");
+
+          function sync() {
+            var isList = select.value === "list";
+            listField.hidden = !isList;
+            segmentField.hidden = isList;
+            // A hidden <select required> still fails the browser's own
+            // validity check — toggling `required` alongside `hidden` is what
+            // makes "Guardar" work at all; without it, the whichever-select is
+            // hidden silently blocks native form submission with no error and
+            // no visible tooltip (the field can't be pointed at if it's hidden).
+            listSelect.required = isList;
+            segmentSelect.required = !isList;
+          }
+
+          var requestId = 0;
+          function updateAudienceCount() {
+            var isList = select.value === "list";
+            var params = isList ? "listId=" + encodeURIComponent(listSelect.value || "") : "segmentId=" + encodeURIComponent(segmentSelect.value || "");
+            var thisRequest = ++requestId;
+            audienceCount.textContent = "Calculando destinatarios…";
+            fetch("/campaigns/audience-count?" + params)
+              .then(function (res) { return res.json(); })
+              .then(function (data) {
+                if (thisRequest !== requestId) return;
+                var count = typeof data.count === "number" ? data.count : "?";
+                audienceCount.textContent = count + " destinatario" + (count === 1 ? "" : "s") + " coincide" + (count === 1 ? "" : "n") + " ahora mismo.";
+              })
+              .catch(function () {
+                if (thisRequest !== requestId) return;
+                audienceCount.textContent = "No se pudo calcular la cantidad de destinatarios.";
+              });
+          }
+
+          select.addEventListener("change", function () { sync(); updateAudienceCount(); });
+          listSelect.addEventListener("change", updateAudienceCount);
+          segmentSelect.addEventListener("change", updateAudienceCount);
+          sync();
+          updateAudienceCount();
+        })();
+      </script>
+      <div class="wizard-step-nav">
+        <span></span>
+        <button type="button" class="primary" data-goto="2">Siguiente</button>
+      </div>
+    </section>
+
+    <section class="wizard-step" data-step="2" hidden>
+      <div id="contentFieldsSection"></div>
+      <input type="hidden" name="contentFields" id="contentFieldsInput">
+      <script type="module" src="/campaign-content-fields.js"></script>
+      <div class="actions">
+        <button class="primary" type="submit">Guardar</button>
+        <a href="/campaigns"><button type="button" class="secondary">Cancelar</button></a>
+      </div>
+      <div class="wizard-step-nav">
+        <button type="button" class="secondary" data-goto="1">Atrás</button>
+        <span></span>
+      </div>
+    </section>
+  </fieldset>
+</form>
+<script type="module" src="/campaign-wizard.js"></script>
+<% if (it.campaign && it.campaign.id) { %>
+  <% if (!readOnly) { %>
+    <div class="send-zone">
+      <p class="send-zone-label">Esto envía correos reales de inmediato — no se puede deshacer.</p>
+      <form method="post" action="/campaigns/<%= it.campaign.id %>/send" id="sendForm">
+        <button type="submit" class="send">Enviar ahora</button>
+      </form>
+    </div>
+    <script>
+      (function () {
+        var form = document.getElementById("sendForm");
+        form.addEventListener("submit", function (event) {
+          if (form.dataset.confirmed === "true") return;
+          event.preventDefault();
+          fetch("/campaigns/<%= it.campaign.id %>/audience-count")
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+              var count = typeof data.count === "number" ? data.count : "?";
+              var message = "¿Encolar el envío de esta campaña a " + count + " destinatario" + (count === 1 ? "" : "s") + " ahora?";
+              if (window.confirm(message)) {
+                form.dataset.confirmed = "true";
+                form.submit();
+              }
+            })
+            .catch(function () {
+              if (window.confirm("No se pudo calcular la cantidad de destinatarios. ¿Encolar el envío de todos modos?")) {
+                form.dataset.confirmed = "true";
+                form.submit();
+              }
+            });
+        });
+      })();
+    </script>
+  <% } %>
+  <div class="actions">
+    <form method="post" action="/campaigns/<%= it.campaign.id %>/duplicate">
+      <button type="submit" class="secondary">Duplicar</button>
+    </form>
+    <form method="post" action="/campaigns/<%= it.campaign.id %>/delete" onsubmit="return confirm('¿Borrar la campaña «' + <%= JSON.stringify(it.campaign.name || "") %> + '»?')">
+      <button type="submit" class="danger">Borrar</button>
+    </form>
+  </div>
+  <% if (it.stats && it.stats.length > 0) { %>
+    <h2>Estado de envío</h2>
+    <table>
+      <thead><tr><th>Estado</th><th>Cantidad</th></tr></thead>
+      <tbody>
+        <% it.stats.forEach(function(stat) { %>
+          <tr><td><span class="status-pill" data-status="<%= stat.status %>"><%= it.sendStatusLabel(stat.status) %></span></td><td><%= stat.count %></td></tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+<% } %>

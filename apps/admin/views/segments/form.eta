@@ -1,0 +1,26 @@
+<h1><%= it.title %></h1>
+<script type="application/json" id="segment-lists-data"><%~ it.listsJson %></script>
+<script type="application/json" id="segment-attribute-values-data"><%~ it.attributeValuesJson %></script>
+<script type="application/json" id="segment-definition-data"><%~ it.definitionJson %></script>
+<form method="post" action="<%= it.segment && it.segment.id ? "/segments/" + it.segment.id : "/segments" %>" id="segment-form">
+  <label><span>Nombre</span><input type="text" name="name" required value="<%= it.segment ? it.segment.name || "" : "" %>"></label>
+  <label>
+    <span>Reglas</span>
+    <div id="segment-builder"></div>
+    <input type="hidden" name="definition" id="segment-definition-input">
+  </label>
+  <p id="segment-count" class="segment-count" aria-live="polite"></p>
+  <div class="actions">
+    <button class="primary" type="submit">Guardar</button>
+    <a href="/segments"><button type="button" class="secondary">Cancelar</button></a>
+  </div>
+</form>
+<% if (it.segment && it.segment.id) { %>
+  <div class="actions">
+    <a href="/segments/<%= it.segment.id %>/contacts"><button type="button" class="secondary">Ver contactos</button></a>
+    <form method="post" action="/segments/<%= it.segment.id %>/delete" onsubmit="return confirm('¿Borrar el segmento «' + <%= JSON.stringify(it.segment.name || "") %> + '»?')">
+      <button type="submit" class="danger">Borrar</button>
+    </form>
+  </div>
+<% } %>
+<script type="module" src="/segment-builder.js"></script>

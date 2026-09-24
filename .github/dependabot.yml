@@ -1,0 +1,35 @@
+version: 2
+updates:
+  # Covers the whole pnpm workspace (apps/* and packages/*) from a single
+  # root entry — Dependabot reads the root lockfile and understands
+  # workspace protocol dependencies, no per-package entry needed.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      # Security fixes (handled separately via automated-security-fixes) stay
+      # ungrouped so each lands as its own reviewable PR. Everything else is
+      # batched weekly instead of one PR per package — but only patch/minor:
+      # the first real grouped PR bundled 13 packages together, several with
+      # major-version jumps (typescript 5→7, zod 3→4, bullmq/ioredis 5→6)
+      # alongside harmless patches, which made the whole PR too risky to
+      # merge without individually re-testing each major bump anyway —
+      # exactly what grouping was meant to save us from. Major bumps now
+      # fall outside this group and come through as their own PR instead, so
+      # they get looked at deliberately rather than merged as a side effect
+      # of the weekly batch.
+      routine-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Keeps the GitHub Actions themselves patched too, if/when a workflow gets
+  # added under .github/workflows — harmless to include now.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

@@ -1,0 +1,5 @@
+<h1><%= it.title %></h1>
+<div class="empty-state">
+  <p>El link que seguiste no existe o ya no está disponible.</p>
+  <p><a href="/">Volver al inicio</a>.</p>
+</div>

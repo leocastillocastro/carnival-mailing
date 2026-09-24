@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+*.log
+.DS_Store
+/uploads/*
+!/uploads/.gitkeep
+# Licensed brand fonts (Autography, Sans Merci, etc.) — binary + license terms,
+# don't belong in git. See apps/api/src/routes/fonts.ts for how they're served.
+/fonts/*
+!/fonts/.gitkeep

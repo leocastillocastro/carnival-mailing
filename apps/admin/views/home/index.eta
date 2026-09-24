@@ -1,0 +1,41 @@
+<p class="home-eyebrow">Carnival admin</p>
+<h1>¿Qué necesitás hacer hoy?</h1>
+<div class="home-stats">
+  <div>
+    <span class="home-stat-value"><%= it.subscriberCount %></span>
+    <span class="home-stat-label">Suscriptores</span>
+  </div>
+  <div>
+    <span class="home-stat-value"><%= it.sentCampaignCount %></span>
+    <span class="home-stat-label">Campañas enviadas</span>
+  </div>
+  <% if (it.lastCampaign) { %>
+    <div>
+      <span class="home-stat-value"><%= new Date(it.lastCampaign.sentAt).toLocaleDateString("es-ES", { day: "numeric", month: "short" }) %></span>
+      <span class="home-stat-label">Última: <%= it.lastCampaign.name %></span>
+    </div>
+  <% } %>
+</div>
+<div class="home-list">
+  <a class="home-item" href="/campaigns/new">
+    <span class="home-item-label">Campañas</span>
+    <span>
+      <span class="home-item-title">Crear una campaña</span>
+      <span class="home-item-desc">Armá un envío nuevo: elegí un template, escribí el contenido y a quién se lo mandás.</span>
+    </span>
+  </a>
+  <a class="home-item" href="/segments">
+    <span class="home-item-label">Segmentos</span>
+    <span>
+      <span class="home-item-title">Ajustar un segmento</span>
+      <span class="home-item-desc">Creá o revisá a quién le llega qué, según reglas (compras, ciudad, actividad).</span>
+    </span>
+  </a>
+  <a class="home-item" href="/templates">
+    <span class="home-item-label">Plantillas</span>
+    <span>
+      <span class="home-item-title">Editar una plantilla</span>
+      <span class="home-item-desc">Cambiá el diseño o el texto fijo de un email — lo que no cambia campaña a campaña.</span>
+    </span>
+  </a>
+</div>

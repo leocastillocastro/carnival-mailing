@@ -1,0 +1,19 @@
+<div class="toolbar">
+  <h1>Segmentos</h1>
+  <a href="/segments/new"><button class="primary">Nuevo segmento</button></a>
+</div>
+<table>
+  <thead><tr><th>Nombre</th><th>Actualizado</th><th></th></tr></thead>
+  <tbody>
+  <% it.segments.forEach(function(segment) { %>
+    <tr>
+      <td><%= segment.name %></td>
+      <td><%= new Date(segment.updatedAt).toLocaleString("es-ES") %></td>
+      <td><a href="/segments/<%= segment.id %>/edit">Editar</a></td>
+    </tr>
+  <% }) %>
+  <% if (it.segments.length === 0) { %>
+    <tr><td colspan="3">Todavía no hay segmentos.</td></tr>
+  <% } %>
+  </tbody>
+</table>

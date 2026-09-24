@@ -1,0 +1,1 @@
+ALTER TYPE "public"."send_status" ADD VALUE 'complained';

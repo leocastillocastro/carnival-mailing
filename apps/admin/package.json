@@ -1,0 +1,34 @@
+{
+  "name": "@carnival/admin",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "createUser": "tsx scripts/createUser.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@carnival/campaigns": "workspace:*",
+    "@carnival/db": "workspace:*",
+    "@carnival/segments": "workspace:*",
+    "@carnival/templates": "workspace:*",
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/formbody": "^9.0.0",
+    "@fastify/multipart": "^9.0.3",
+    "@fastify/rate-limit": "^11.2.0",
+    "dotenv": "^17.4.2",
+    "eta": "^3.5.0",
+    "fastify": "^5.2.0",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.0",
+    "tsx": "^4.23.13",
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.11"
+  }
+}

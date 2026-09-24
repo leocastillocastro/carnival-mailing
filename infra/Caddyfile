@@ -1,0 +1,12 @@
+mailing.example.com {
+	# Caddy is the only hop in front of apps/api (nothing else proxies to it),
+	# so a client-supplied X-Forwarded-For should never be trusted — by
+	# default reverse_proxy *appends* to whatever a client sends instead of
+	# replacing it, which apps/api's `trustProxy: true` would otherwise read
+	# as the real client IP (defeating per-IP rate limiting and poisoning
+	# request logs). Overwriting it with Caddy's own view of the remote
+	# address is what actually makes `trustProxy: true` safe to rely on.
+	reverse_proxy host.docker.internal:3000 {
+		header_up X-Forwarded-For {http.request.remote.host}
+	}
+}
