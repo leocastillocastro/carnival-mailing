@@ -57,24 +57,59 @@ Node.js · TypeScript · pnpm monorepo · Fastify · PostgreSQL · Drizzle ORM �
 
 ## Getting started
 
-Requirements: Node.js 22+, pnpm, Docker.
+Requirements: Node.js 22+, pnpm (`corepack enable`), Docker, a POSIX shell with `openssl`.
+
+There is no root `.env`. Each package runs from its own directory (`pnpm --filter`), so each one reads the `.env` next to its own `package.json`. Every package that needs one ships a `.env.example`.
+
+**1. Install dependencies**
 
 ```bash
 pnpm install
-cp .env.example .env          # fill in the values
+```
+
+**2. Start Postgres and Redis.** Their passwords live in `infra/.env`, and `docker compose` refuses to start without it. Both ports are bound to `127.0.0.1` only.
+
+```bash
+printf 'POSTGRES_PASSWORD=%s\nREDIS_PASSWORD=%s\n' "$(openssl rand -hex 24)" "$(openssl rand -hex 24)" > infra/.env
 docker compose -f infra/docker-compose.yml up -d postgres redis
+```
+
+> If you ran an older version of this compose file, the existing `postgres_data` volume keeps its old password. Run `docker compose -f infra/docker-compose.yml down -v` first. This deletes local data.
+
+**3. Create each package's `.env`** from its example, filling in the passwords from step 2 and a random SNS webhook token:
+
+```bash
+set -a; . infra/.env; set +a
+for dir in apps/api apps/worker apps/admin packages/db packages/segments packages/campaigns; do
+  sed -e "s|carnival:CHANGE_ME@|carnival:${POSTGRES_PASSWORD}@|" \
+      -e "s|redis://:CHANGE_ME@|redis://:${REDIS_PASSWORD}@|" \
+      "$dir/.env.example" > "$dir/.env"
+done
+sed -i.bak "s|^SES_WEBHOOK_TOKEN=.*|SES_WEBHOOK_TOKEN=$(openssl rand -hex 32)|" apps/api/.env && rm apps/api/.env.bak
+```
+
+The remaining values are local-development placeholders. Real WooCommerce keys are only needed for `backfill`. Actually sending email needs AWS credentials from the standard SDK chain (never from `.env`).
+
+**4. Migrate the database and create an admin user**
+
+```bash
 pnpm --filter @carnival/db migrate
-pnpm --filter @carnival/api dev
+pnpm --filter @carnival/admin createUser -- you@example.com '<password>'
+```
+
+**5. Run the apps**, each in its own terminal:
+
+```bash
+pnpm --filter @carnival/api dev      # http://localhost:3000
 pnpm --filter @carnival/worker dev
-pnpm --filter @carnival/admin dev
-pnpm --filter @carnival/admin createUser -- <email> <password>
+pnpm --filter @carnival/admin dev    # http://localhost:3001
 ```
 
 Run the checks:
 
 ```bash
 pnpm typecheck
-pnpm test        # integration tests need the Postgres and Redis containers running
+pnpm test        # integration tests need the containers from step 2 and the .env files from step 3
 ```
 
 The suite has 47 test files, combining unit tests and integration tests against real PostgreSQL and Redis.
