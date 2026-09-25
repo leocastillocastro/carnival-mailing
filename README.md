@@ -96,8 +96,10 @@ The remaining values are local-development placeholders. Real WooCommerce keys a
 
 ```bash
 pnpm --filter @carnival/db migrate
-pnpm --filter @carnival/admin createUser -- you@example.com '<password>'
+pnpm --filter @carnival/admin createUser -- you@example.com
 ```
+
+`createUser` prompts for the password twice without echoing it, so it never lands in shell history or the process list.
 
 **5. Run the apps**, each in its own terminal:
 
