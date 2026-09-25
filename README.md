@@ -109,6 +109,8 @@ pnpm --filter @carnival/worker dev
 pnpm --filter @carnival/admin dev    # http://localhost:3001
 ```
 
+The admin listens on `127.0.0.1` by default. To reach it from other machines on the LAN, set `HOST=0.0.0.0` in `apps/admin/.env`, and only do that behind a firewall that keeps port 3001 off the internet. The admin serves plain HTTP.
+
 Run the checks:
 
 ```bash

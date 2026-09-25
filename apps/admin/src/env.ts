@@ -5,6 +5,10 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   REDIS_URL: z.string().url(),
   PORT: z.coerce.number().default(3001),
+  // Loopback by default: the admin has no TLS and is meant for a single
+  // operator. Set HOST=0.0.0.0 to reach it from the LAN, and only behind a
+  // firewall that keeps it off the public internet.
+  HOST: z.string().default("127.0.0.1"),
   NODE_ENV: z.string().default("development"),
   // Independent from NODE_ENV on purpose: whether the session cookie gets the
   // Secure flag depends on whether this deployment sits behind TLS, not on
