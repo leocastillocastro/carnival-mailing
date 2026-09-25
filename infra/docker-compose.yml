@@ -4,10 +4,12 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: carnival
-      POSTGRES_PASSWORD: carnival
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in infra/.env}
       POSTGRES_DB: carnival_mailing
+    # Solo loopback: las apps corren en el host, nada de afuera necesita
+    # llegar a la base directamente.
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -19,10 +21,20 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:?set REDIS_PASSWORD in infra/.env}"]
+    # Solo para el healthcheck. No se usa REDISCLI_AUTH a proposito: con eso,
+    # un `redis-cli` suelto dentro del contenedor se autenticaria solo.
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD in infra/.env}
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     volumes:
       - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli --no-auth-warning -a \"$$REDIS_PASSWORD\" ping | grep -q PONG"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   # Reverse proxy público de apps/api — obtiene y renueva el certificado de
   # Let's Encrypt solo. apps/admin queda deliberadamente afuera (LAN-only,
