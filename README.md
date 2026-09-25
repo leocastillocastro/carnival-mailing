@@ -1,5 +1,7 @@
 # Carnival Mailing
 
+![CI](https://github.com/leocastillocastro/carnival-mailing/actions/workflows/ci.yml/badge.svg)
+
 Self-hosted email marketing platform built for **Carnival**, a butcher shop in Barcelona with a WooCommerce online store.
 
 It replaces a SaaS tool like Mailchimp: it syncs customers and orders from WooCommerce, lets the owner build segments ("bought product X", "no order in 60 days", "abandoned cart"), sends campaigns through **Amazon SES**, and tracks opens, clicks, bounces and unsubscribes — GDPR-compliant.
