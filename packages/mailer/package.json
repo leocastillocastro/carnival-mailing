@@ -10,10 +10,10 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@aws-sdk/client-sesv2": "^3.1124.0"
+    "@aws-sdk/client-sesv2": "^3.1141.0"
   },
   "devDependencies": {
-    "@types/node": "^26.4.0",
+    "@types/node": "^26.6.3",
     "typescript": "^5.7.0",
     "vitest": "^4.1.11"
   }

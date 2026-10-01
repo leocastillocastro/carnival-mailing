@@ -13,10 +13,10 @@
     "@carnival/db": "workspace:*",
     "@carnival/queue": "workspace:*",
     "@carnival/segments": "workspace:*",
-    "drizzle-orm": "^0.45.2"
+    "drizzle-orm": "^0.45.3"
   },
   "devDependencies": {
-    "@types/node": "^26.4.0",
+    "@types/node": "^26.6.3",
     "dotenv": "^17.4.2",
     "typescript": "^5.7.0",
     "vitest": "^4.1.11"
