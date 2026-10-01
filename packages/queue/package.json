@@ -10,11 +10,11 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "bullmq": "^6.3.4",
+    "bullmq": "^6.3.9",
     "ioredis": "^6.0.0"
   },
   "devDependencies": {
-    "@types/node": "^26.4.0",
+    "@types/node": "^26.6.3",
     "typescript": "^5.7.0",
     "vitest": "^4.1.11"
   }
