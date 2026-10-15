@@ -16,18 +16,18 @@
     "@carnival/db": "workspace:*",
     "@carnival/segments": "workspace:*",
     "@carnival/templates": "workspace:*",
-    "@fastify/cookie": "^11.0.2",
-    "@fastify/formbody": "^9.0.0",
+    "@fastify/cookie": "^11.1.3",
+    "@fastify/formbody": "^9.0.1",
     "@fastify/multipart": "^9.0.3",
-    "@fastify/rate-limit": "^11.2.0",
+    "@fastify/rate-limit": "^11.2.1",
     "dotenv": "^17.4.2",
     "eta": "^3.5.0",
-    "fastify": "^5.2.0",
-    "zod": "^4.5.4"
+    "fastify": "^5.12.5",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@types/node": "^26.4.0",
-    "tsx": "^4.23.13",
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
     "typescript": "^5.7.0",
     "vitest": "^4.1.11"
   }
