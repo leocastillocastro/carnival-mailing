@@ -43,8 +43,8 @@ importers:
         specifier: ^11.2.0
         version: 11.2.0
       dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
+        specifier: ^18.0.1
+        version: 18.0.1
       eta:
         specifier: ^3.5.0
         version: 3.5.0
@@ -92,8 +92,8 @@ importers:
         specifier: ^11.2.0
         version: 11.2.0
       dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
+        specifier: ^18.0.1
+        version: 18.0.1
       fastify:
         specifier: ^5.2.0
         version: 5.12.1
@@ -132,8 +132,8 @@ importers:
         specifier: ^6.3.4
         version: 6.3.4(ioredis@6.0.0)(pg@8.23.0)
       dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
+        specifier: ^18.0.1
+        version: 18.0.1
       zod:
         specifier: ^4.5.4
         version: 4.5.4
@@ -170,8 +170,8 @@ importers:
         specifier: ^26.4.0
         version: 26.4.1
       dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
+        specifier: ^18.0.1
+        version: 18.0.1
       typescript:
         specifier: ^5.7.0
         version: 5.9.3
@@ -192,8 +192,8 @@ importers:
         specifier: ^8.11.10
         version: 8.23.1
       dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
+        specifier: ^18.0.1
+        version: 18.0.1
       drizzle-kit:
         specifier: ^0.31.10
         version: 0.31.10
@@ -258,8 +258,8 @@ importers:
         specifier: ^26.4.0
         version: 26.4.1
       dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
+        specifier: ^18.0.1
+        version: 18.0.1
       typescript:
         specifier: ^5.7.0
         version: 5.9.3
@@ -1075,9 +1075,10 @@ packages:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
-  dotenv@17.4.2:
-    resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
+  dotenv@18.0.1:
+    resolution: {integrity: sha512-0eR4m4D/jH5eaI3evo2ZqqMii5mrTCR12v12VChdie6O1gPHs7XAjzTep0CWc1Bd+oNx3vVfbi734dK4zghigw==}
     engines: {node: '>=12'}
+    hasBin: true
 
   drizzle-kit@0.31.10:
     resolution: {integrity: sha512-7OZcmQUrdGI+DUNNsKBn1aW8qSoKuTH7d0mYgSP8bAzdFzKoovxEFnoGQp2dVs82EOJeYycqRtciopszwUf8bw==}
@@ -2279,7 +2280,7 @@ snapshots:
   detect-libc@2.1.2:
     optional: true
 
-  dotenv@17.4.2: {}
+  dotenv@18.0.1: {}
 
   drizzle-kit@0.31.10:
     dependencies:
